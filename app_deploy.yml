@@ -1,0 +1,12 @@
+
+- hosts: web
+  tasks:
+  - name: Installing packages
+    apt: "{{ item }}" state=latest
+    with_items:
+            - nginx
+            - php-fpm
+            - git
+            - golang
+
+
