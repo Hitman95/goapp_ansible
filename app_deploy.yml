@@ -2,11 +2,11 @@
 - hosts: web
   tasks:
   - name: Installing packages
-    apt: "{{ item }}" state=latest
+    apt: name={{item}} state=latest
     with_items:
-            - nginx
-            - php-fpm
-            - git
-            - golang
+        - nginx
+        - php-fpm
+        - git
+        - golang
 
 
