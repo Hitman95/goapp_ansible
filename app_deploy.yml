@@ -24,6 +24,12 @@
     file: src=/etc/nginx/sites-available/{{site_name}} dest=/etc/nginx/sites-enabled/{{site_name}} state=link owner=root group=root mode=0644
     notify: restart nginx
 
+  - name: Clone goapp-web
+    git:
+     repo: https://github.com/vozerov/goapp-web.git
+     dest: /srv/goapp-web
+     clone: yes
+
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted
