@@ -30,11 +30,30 @@
 
   - name: Clone goapp-web
     git:
-     repo: https://github.com/vozerov/goapp-web.git
+     repo: https://github.com/Hitman95/goapp-web.git
      dest: /srv/goapp-web
      clone: yes
 
+  - name: Clone goapp-api
+    git:
+     repo: https://github.com/Hitman95/goapp-api.git
+     dest: /srv/goapp-api
+     clone: yes
+
+  - name: Clone phpapp
+    git:
+     repo: https://github.com/Hitman95/phpapp.git
+     dest: /srv/phpapp
+     clone: yes
+
+  - name: Install goapp-api service 
+    template: src=templates/goapp-api.service.j2 dest=/etc/systemd/system/goapp-api.service owner=root group=root
+    notify: start goapp-api
+
   handlers:
+    - name: start goapp-api
+      service: name=goapp-api state=reloaded
+
     - name: restart nginx
       service: name=nginx state=restarted
 
