@@ -52,7 +52,7 @@
 
   handlers:
     - name: start goapp-api
-      service: name=goapp-api state=reloaded
+      service: name=goapp-api state=reloaded enabled=yes
 
     - name: restart nginx
       service: name=nginx state=restarted
