@@ -1,0 +1,14 @@
+server {
+        listen 80;
+
+        server_name {{site_name}};
+
+        location /.well-known/ {
+         root /srv/acme;
+        }
+
+        location / {
+         return 301 https://{{site_name}}$request_uri;
+        }
+}
+
