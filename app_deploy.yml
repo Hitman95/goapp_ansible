@@ -17,6 +17,17 @@
   - name: Remove default config
     file: path=/etc/nginx/sites-enabled/default state=absent
     notify: restart nginx
+
+  - name: Install http site config
+    template: src=templates/{{site_name}}.http.j2 dest=/etc/nginx/sites-available/{{site_name}}.http owner=root group=root mode=0644
+    notify: restart nginx
+
+  - name: Create link http site
+    file: src=/etc/nginx/sites-available/{{site_name}}.http dest=/etc/nginx/sites-enabled/{{site_name}}.http state=link owner=root group=root mode=0644
+    notify: restart nginx
+
+  - name: Force nginx restart
+    meta: flush_handlers
    
   - name: Install https site config
     template: src=templates/{{site_name}}.j2 dest=/etc/nginx/sites-available/{{site_name}} owner=root group=root mode=0644
@@ -26,20 +37,13 @@
     file: src=/etc/nginx/sites-available/{{site_name}} dest=/etc/nginx/sites-enabled/{{site_name}} state=link owner=root group=root mode=0644
     notify: restart nginx
 
-  - name: Install http site config
-    template: src=templates/{{site_name}}.http.j2 dest=/etc/nginx/sites-available/{{site_name}}.http owner=root group=root mode=0644
-    notify: restart nginx
-
-  - name: Create link
-    file: src=/etc/nginx/sites-available/{{site_name}}.http dest=/etc/nginx/sites-enabled/{{site_name}}.http state=link owner=root group=root mode=0644
-    notify: restart nginx
-
   - name: Add folder to acme
     file: path=/srv/acme state=directory
 
   - name: Recieve SSL sertificates
     shell: letsencrypt certonly --non-interactive --agree-tos --webroot -w /srv/acme -d {{site_name}} --email {{email}}
-    creates: /etc/letsencrypt/live/{{site_name}}/fullchain.pem 
+    args:    
+     creates: /etc/letsencrypt/live/{{site_name}}/fullchain.pem 
 
   - name: Clone goapp-web
     git:
