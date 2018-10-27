@@ -5,6 +5,10 @@
      email: hitman959@gmail.com
 
   tasks:
+  - name: Add certbot repository
+    apt_repository:
+     repo: 'ppa:certbot/certbot'
+
   - name: Installing packages
     apt: name={{item}} state=latest
     with_items:
@@ -12,7 +16,8 @@
         - php-fpm
         - git
         - golang
-        - letsencrypt
+        - software-properties-common
+        - python-certbot-nginx  
       
   - name: Remove default config
     file: path=/etc/nginx/sites-enabled/default state=absent
@@ -41,7 +46,7 @@
     file: path=/srv/acme state=directory
 
   - name: Recieve SSL sertificates
-    shell: letsencrypt certonly --non-interactive --agree-tos --webroot -w /srv/acme -d {{site_name}} --email {{email}}
+    shell: certbot certonly --non-interactive --agree-tos --webroot -w /srv/acme -d {{site_name}} --email {{email}}
     args:    
      creates: /etc/letsencrypt/live/{{site_name}}/fullchain.pem 
 
