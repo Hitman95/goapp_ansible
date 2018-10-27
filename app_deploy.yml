@@ -45,6 +45,12 @@
     args:    
      creates: /etc/letsencrypt/live/{{site_name}}/fullchain.pem 
 
+  - name: Add letsencrypt cronjob for cert renewal
+    cron:
+     name: letsencrypt_renewal
+     special_time: daily
+     job: letsencrypt --renew certonly -a webroot --webroot-path=/srv/acme && systemctl reload nginx
+
   - name: Clone goapp-web
     git:
      repo: https://github.com/Hitman95/goapp-web.git
